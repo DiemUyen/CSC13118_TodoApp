@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:todo_app/routes.dart';
 import 'package:todo_app/utils/app_theme.dart';
 import 'package:todo_app/utils/extensions.dart';
+import 'package:todo_app/widgets/data_search_delegate.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget{
   const CustomAppBar({Key? key, required this.title}) : super(key: key);
@@ -21,7 +22,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget{
       actions: [
         IconButton(
           onPressed: () {
-            Navigator.pushNamed(context, RouteGenerator.searchPage);
+            showSearch(context: context, delegate: DataSearchDelegate(),);
           },
           icon: const FaIcon(FontAwesomeIcons.magnifyingGlass),
           color: AppTheme.lightTheme(null).colorScheme.primary,

@@ -13,8 +13,8 @@ class ToDoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     int projectNameMaxLength;
 
-    if (todo.projectName.length > 30) {
-      projectNameMaxLength = 30;
+    if (todo.projectName.length > 25) {
+      projectNameMaxLength = 25;
     }
     else {
       projectNameMaxLength = todo.projectName.length;
