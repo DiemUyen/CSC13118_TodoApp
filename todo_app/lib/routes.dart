@@ -5,6 +5,7 @@ import 'package:todo_app/routes/detail/profile_page.dart';
 import 'package:todo_app/routes/home/adding_task_bottom_sheet.dart';
 import 'package:todo_app/routes/home/notifications_page.dart';
 import 'package:todo_app/routes/home/personal_page.dart';
+import 'package:todo_app/routes/home/search_page.dart';
 import 'package:todo_app/routes/home/tasks_page.dart';
 
 class RouteGenerator {
@@ -19,6 +20,9 @@ class RouteGenerator {
   static const String personalPage = '/personal';
   static const String profilePage = '/profile';
   static const String notificationsSettingPage = '/notificationsSetting';
+
+  // Search
+  static const String searchPage = '/search';
 
   // Notification
   static const String notificationsPage = '/notifications';
@@ -52,6 +56,10 @@ class RouteGenerator {
       case notificationsSettingPage:
         return MaterialPageRoute(
           builder: (_) => const NotificationsSettingPage()
+        );
+      case searchPage:
+        return MaterialPageRoute(
+          builder: (_) => const SearchPage()
         );
       case notificationsPage:
         return MaterialPageRoute(
