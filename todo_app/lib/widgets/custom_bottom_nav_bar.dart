@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   const CustomBottomNavigationBar({Key? key, required this.currentIndex, required this.onTap}) : super(key: key);
@@ -19,11 +20,11 @@ class CustomBottomNavigationBar extends StatelessWidget {
         showUnselectedLabels: false,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.list_rounded),
+            icon: FaIcon(FontAwesomeIcons.listCheck),
             label: 'Tasks',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person_rounded),
+            icon: FaIcon(FontAwesomeIcons.solidUser),
             label: 'Personal',
           )
         ],

@@ -6,6 +6,11 @@ class AppTheme {
     return ThemeData(
       colorScheme: scheme,
       useMaterial3: true,
+
+      tabBarTheme: TabBarTheme(
+        labelColor: scheme.primary,
+        unselectedLabelColor: scheme.onSurfaceVariant,
+      )
     );
   }
 
