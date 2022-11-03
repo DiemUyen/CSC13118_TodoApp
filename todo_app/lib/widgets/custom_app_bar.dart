@@ -16,7 +16,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget{
       title: Text(
         title,
         style: context.titleLarge?.copyWith(
-          fontWeight: FontWeight.bold
+          fontWeight: FontWeight.bold,
+          color: AppTheme.lightTheme(null).colorScheme.onSurface
         ),
       ),
       actions: [
@@ -25,7 +26,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget{
             showSearch(context: context, delegate: DataSearchDelegate(),);
           },
           icon: const FaIcon(FontAwesomeIcons.magnifyingGlass),
-          color: AppTheme.lightTheme(null).colorScheme.primary,
+          color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant,
         ),
         const SizedBox(width: 8,),
         IconButton(
@@ -33,7 +34,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget{
             Navigator.pushNamed(context, RouteGenerator.notificationsPage);
           },
           icon: const FaIcon(FontAwesomeIcons.solidBell),
-          color: AppTheme.lightTheme(null).colorScheme.primary,
+          color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant,
         ),
         const SizedBox(width: 8,),
       ],

@@ -1,10 +1,16 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:todo_app/routes.dart';
 import 'package:todo_app/routes/home.dart';
 import 'package:todo_app/utils/app_theme.dart';
 
 void main() {
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+    ),
+  );
   runApp(const MyApp());
 }
 

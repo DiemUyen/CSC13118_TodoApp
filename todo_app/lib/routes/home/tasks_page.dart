@@ -125,9 +125,9 @@ class GreetingBar extends StatelessWidget {
 
 class CircleTabIndicator extends Decoration {
   final Color color;
-  double radius;
+  final double radius;
 
-  CircleTabIndicator({required this.color, required this.radius});
+  const CircleTabIndicator({required this.color, required this.radius});
 
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) {
@@ -144,13 +144,13 @@ class _CirclePainter extends BoxPainter {
 
   @override
   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
-    Paint _paint = Paint();
-    _paint.color = color;
-    _paint.isAntiAlias = true;
+    Paint paint = Paint();
+    paint.color = color;
+    paint.isAntiAlias = true;
 
     final Offset circleOffset = Offset(configuration.size!.width / 2 - radius / 2, configuration.size!.height - radius);
 
-    canvas.drawCircle(offset + circleOffset, radius, _paint);
+    canvas.drawCircle(offset + circleOffset, radius, paint);
   }
 
 }

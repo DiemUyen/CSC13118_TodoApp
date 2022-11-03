@@ -43,7 +43,7 @@ class DataSearchDelegate extends SearchDelegate {
     return Center(
       child: Text(
         query,
-        style: context.bodyMedium?.copyWith(
+        style: context.bodyLarge?.copyWith(
             color: AppTheme.lightTheme(null).colorScheme.onSurface
         ),
       ),
@@ -63,7 +63,7 @@ class DataSearchDelegate extends SearchDelegate {
         return ListTile(
           title: Text(
             suggestion,
-            style: context.bodyMedium,
+            style: context.bodyLarge,
           ),
           onTap: () {
             query = suggestion;
@@ -79,7 +79,7 @@ class DataSearchDelegate extends SearchDelegate {
     var superThemeData = super.appBarTheme(context);
     return superThemeData.copyWith(
       textTheme: superThemeData.textTheme.copyWith(
-        headline6: context.bodyMedium
+        headline6: context.bodyLarge
       )
     );
   }
