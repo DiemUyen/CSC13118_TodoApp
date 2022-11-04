@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/utils/extensions.dart';
 
 class DetailTaskPage extends StatefulWidget {
   const DetailTaskPage({Key? key}) : super(key: key);
@@ -10,6 +11,11 @@ class DetailTaskPage extends StatefulWidget {
 class _DetailTaskPageState extends State<DetailTaskPage> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Center(
+      child: Text(
+        'Payload navigation',
+        style: context.titleLarge,
+      ),
+    );
   }
 }

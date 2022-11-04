@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/service/local_notice_service.dart';
 import 'package:todo_app/utils/app_theme.dart';
 import 'package:todo_app/utils/extensions.dart';
 
 class CustomFloatingActionButton extends StatelessWidget {
-  const CustomFloatingActionButton({Key? key}) : super(key: key);
+  const CustomFloatingActionButton({Key? key, required this.notificationService}) : super(key: key);
+
+  final LocalNotificationService notificationService;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +69,16 @@ class CustomFloatingActionButton extends StatelessWidget {
                         ),
                         const Spacer(),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            Navigator.pop(context);
+                            await notificationService.showScheduleNotification(
+                              id: 0,
+                              title: 'Notification Schedule title',
+                              body: 'Some content',
+                              seconds: 5,
+                              payload: '10',
+                            );
+                          },
                           //icon: const FaIcon(FontAwesomeIcons.solidPaperPlane),
                           icon: const Icon(Icons.send_rounded),
                           color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant,

@@ -37,6 +37,8 @@ dependencies:
   google_fonts: ^3.0.1
   dynamic_color: ^1.4.0
   font_awesome_flutter: ^10.2.1
+  flutter_local_notifications: ^12.0.3
+  timezone: ^0.9.0
 
 dev_dependencies:
   flutter_test:

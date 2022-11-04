@@ -17,12 +17,15 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+  static final  navigatorKey = GlobalKey<NavigatorState>();
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return DynamicColorBuilder(
       builder: (ColorScheme? lightColorScheme, ColorScheme? darkColorScheme) {
         return MaterialApp(
+          navigatorKey: navigatorKey,
           debugShowCheckedModeBanner: false,
           title: 'Flutter Demo',
           theme: AppTheme.lightTheme(lightColorScheme),
@@ -34,3 +37,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
