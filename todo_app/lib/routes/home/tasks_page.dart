@@ -166,14 +166,13 @@ class TodayTabView extends StatelessWidget {
       itemCount: 10,
       itemBuilder: (context, index) {
         return ToDoCard(
-          isChecked: false,
           todo: Task(
-            id: 1,
+            taskId: 1,
             name: 'Mobile design UI',
             description: 'Design prototype for Authentication flow',
             toDo: true,
             toDoTime: DateTime.now(),
-            projectName: 'Advanced Mobile Development',
+            projectId: /*'Advanced Mobile Development'*/1,
           ),
         );
       },
@@ -192,14 +191,13 @@ class UpcomingTabView extends StatelessWidget {
       itemCount: 10,
       itemBuilder: (context, index) {
         return ToDoCard(
-          isChecked: false,
           todo: Task(
-            id: 1,
+            taskId: 1,
             name: 'Mobile design UI',
             description: 'Design prototype for Authentication flow',
             toDo: true,
             toDoTime: DateTime.now(),
-            projectName: 'Advanced Mobile Development',
+            projectId: /*'Advanced Mobile Development'*/1,
           ),
         );
       },
@@ -218,14 +216,13 @@ class AllTabView extends StatelessWidget {
       itemCount: 10,
       itemBuilder: (context, index) {
         return ToDoCard(
-          isChecked: false,
           todo: Task(
-            id: 1,
+            taskId: 1,
             name: 'Mobile design UI',
             description: 'Design prototype for Authentication flow',
             toDo: true,
             toDoTime: DateTime.now(),
-            projectName: 'Advanced Mobile Development',
+            projectId: /*'Advanced Mobile Development'*/1,
           ),
         );
       },

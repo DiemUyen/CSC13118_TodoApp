@@ -24,8 +24,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
             label: 'Tasks',
           ),
           BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.solidUser),
-            label: 'Personal',
+            icon: FaIcon(FontAwesomeIcons.solidBell),
+            label: 'Notifications',
           )
         ],
       ),

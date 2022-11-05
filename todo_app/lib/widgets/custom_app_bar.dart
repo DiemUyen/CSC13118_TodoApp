@@ -29,14 +29,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget{
           color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant,
         ),
         const SizedBox(width: 8,),
-        IconButton(
-          onPressed: () {
-            Navigator.pushNamed(context, RouteGenerator.notificationsPage);
-          },
-          icon: const FaIcon(FontAwesomeIcons.solidBell),
-          color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant,
-        ),
-        const SizedBox(width: 8,),
       ],
     );
   }

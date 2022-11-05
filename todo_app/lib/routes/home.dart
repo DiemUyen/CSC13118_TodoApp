@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/routes/home/notifications_page.dart';
 import 'package:todo_app/routes/home/personal_page.dart';
 import 'package:todo_app/routes/home/tasks_page.dart';
 import 'package:todo_app/service/local_notice_service.dart';
@@ -15,7 +16,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   var currentIndex = 0;
-  final screens = [const TasksPage(), const PersonalPage()];
+  final screens = [const TasksPage(), const NotificationsPage()];
   late final LocalNotificationService service;
 
   @override
