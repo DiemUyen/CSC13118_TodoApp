@@ -1,10 +1,12 @@
+import 'package:todo_app/models/priority.dart';
+
 class Task {
   final int taskId;
   final String name;
   final String description;
   final bool toDo;
   final DateTime toDoTime;
-  final int projectId;
+  final PriorityTask priority;
 
   const Task ({
     required this.taskId,
@@ -12,7 +14,7 @@ class Task {
     required this.description,
     required this.toDo,
     required this.toDoTime,
-    required this.projectId
+    required this.priority
   });
 
   Map<String, dynamic> toMap() {
@@ -22,7 +24,7 @@ class Task {
       'description': description,
       'toDo': toDo == true ? 1 : 0,
       'toDoTime': toDoTime.toIso8601String(),
-      'projectId': projectId,
+      'priority': priority,
     };
   }
 
@@ -33,7 +35,7 @@ class Task {
       description: task['description'],
       toDo: task['toDo'] == 1,
       toDoTime: DateTime.parse(task['toDoTime']),
-      projectId: task['projectId']
+      priority: PriorityTask.values[task['priority']]
     );
   }
 }

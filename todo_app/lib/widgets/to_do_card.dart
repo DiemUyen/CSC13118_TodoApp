@@ -62,7 +62,7 @@ class ToDoCard extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          todo.projectId.toString()/*.substring(0, projectNameMaxLength - 1)*/,
+                          todo.priority.toString()/*.substring(0, projectNameMaxLength - 1)*/,
                           style: context.bodyMedium?.copyWith(
                             color: AppTheme.lightTheme(null).colorScheme.tertiary
                           ),

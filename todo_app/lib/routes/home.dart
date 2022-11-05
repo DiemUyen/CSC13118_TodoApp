@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/routes/home/notifications_page.dart';
-import 'package:todo_app/routes/home/personal_page.dart';
 import 'package:todo_app/routes/home/tasks_page.dart';
 import 'package:todo_app/service/local_notice_service.dart';
 import 'package:todo_app/widgets/custom_bottom_nav_bar.dart';

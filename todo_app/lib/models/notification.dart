@@ -1,18 +1,16 @@
-import 'package:flutter/material.dart';
-
 class AppNotification {
   final int notificationId;
   final String title;
   final String description;
   final DateTime time;
-  final String payload;
+  final int taskId;
 
   const AppNotification({
     required this.notificationId,
     required this.title,
     required this.description,
     required this.time,
-    required this.payload,
+    required this.taskId,
   });
   
   Map<String, dynamic> toMap() {
@@ -21,7 +19,7 @@ class AppNotification {
       'title': title,
       'description': description,
       'time': time.toIso8601String(),
-      'payload': payload
+      'taskId': taskId
     };
   }
   
@@ -31,7 +29,7 @@ class AppNotification {
       title: noti['title'],
       description: noti['description'],
       time: DateTime.parse(noti['time']),
-      payload: noti['payload'],
+      taskId: noti['taskId'],
     );
   }  
 }

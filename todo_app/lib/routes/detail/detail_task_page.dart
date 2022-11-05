@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:todo_app/models/priority.dart';
 import 'package:todo_app/models/task.dart';
 import 'package:todo_app/utils/extensions.dart';
 
@@ -11,7 +12,7 @@ class DetailTaskPage extends StatefulWidget {
 }
 
 class _DetailTaskPageState extends State<DetailTaskPage> {
-  final todo = Task(taskId: 1, name: 'Thiet ke giao dien', description: 'Ve prototype cho ung dung UniRide', toDo: true, toDoTime: DateTime.now(), projectId: 2);
+  final todo = Task(taskId: 1, name: 'Thiet ke giao dien', description: 'Ve prototype cho ung dung UniRide', toDo: true, toDoTime: DateTime.now(), priority: PriorityTask.delegate);
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -40,7 +41,7 @@ class _DetailTaskPageState extends State<DetailTaskPage> {
               ),
               const SizedBox(height: 8,),
               Text(
-                '${todo.projectId}',
+                '${todo.priority}',
                 style: context.bodyMedium,
               )
             ],

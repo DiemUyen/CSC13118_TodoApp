@@ -51,7 +51,6 @@ class LocalNotificationService {
   }
 
   // Notification details
-
   Future<NotificationDetails> _notificationDetails() async {
     const androidNotificationDetails =
     AndroidNotificationDetails(

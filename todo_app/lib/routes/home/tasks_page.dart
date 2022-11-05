@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:todo_app/models/priority.dart';
 import 'package:todo_app/models/task.dart';
 import 'package:todo_app/utils/app_theme.dart';
 import 'package:todo_app/utils/extensions.dart';
@@ -172,7 +173,7 @@ class TodayTabView extends StatelessWidget {
             description: 'Design prototype for Authentication flow',
             toDo: true,
             toDoTime: DateTime.now(),
-            projectId: /*'Advanced Mobile Development'*/1,
+            priority: /*'Advanced Mobile Development'*/PriorityTask.schedule,
           ),
         );
       },
@@ -197,7 +198,7 @@ class UpcomingTabView extends StatelessWidget {
             description: 'Design prototype for Authentication flow',
             toDo: true,
             toDoTime: DateTime.now(),
-            projectId: /*'Advanced Mobile Development'*/1,
+            priority: /*'Advanced Mobile Development'*/PriorityTask.delegate,
           ),
         );
       },
@@ -222,7 +223,7 @@ class AllTabView extends StatelessWidget {
             description: 'Design prototype for Authentication flow',
             toDo: true,
             toDoTime: DateTime.now(),
-            projectId: /*'Advanced Mobile Development'*/1,
+            priority: /*'Advanced Mobile Development'*/PriorityTask.doFirst,
           ),
         );
       },
