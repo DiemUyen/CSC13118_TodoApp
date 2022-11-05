@@ -1,15 +1,15 @@
 import 'package:todo_app/models/priority.dart';
 
 class Task {
-  final int taskId;
+  int? taskId;
   final String name;
   final String description;
   final bool toDo;
   final DateTime toDoTime;
   final PriorityTask priority;
 
-  const Task ({
-    required this.taskId,
+  Task ({
+    this.taskId,
     required this.name,
     required this.description,
     required this.toDo,
@@ -24,7 +24,7 @@ class Task {
       'description': description,
       'toDo': toDo == true ? 1 : 0,
       'toDoTime': toDoTime.toIso8601String(),
-      'priority': priority,
+      'priority': priority.index,
     };
   }
 

@@ -25,12 +25,15 @@ class LocalNotificationService {
     final String? payload = notificationResponse.payload;
     if (payload != null) {
       debugPrint('Notification payload: $payload');
-      Navigator.pushNamed(MyApp.navigatorKey.currentContext!, RouteGenerator.detailTaskPage);
+      Navigator.pushNamed(MyApp.navigatorKey.currentContext!, RouteGenerator.detailTaskPage, arguments: payload);
     }
   }
 
   void _onDidReceiveLocalNotification(int id, String? title, String? body, String? payload) async {
-    Navigator.pushNamed(MyApp.navigatorKey.currentContext!, RouteGenerator.detailTaskPage);
+    if (payload != null) {
+      debugPrint('Notification payload: $payload');
+      Navigator.pushNamed(MyApp.navigatorKey.currentContext!, RouteGenerator.detailTaskPage, arguments: payload);
+    }
   }
 
   Future<void> _initialize() async {
@@ -79,7 +82,7 @@ class LocalNotificationService {
     required int id,
     required String title,
     required String body,
-    required int seconds,
+    required DateTime time,
     required String payload,
   }) async {
     final notificationDetails = await _notificationDetails();
@@ -87,7 +90,7 @@ class LocalNotificationService {
       id,
       title,
       body,
-      tz.TZDateTime.from(DateTime.now().add(Duration(seconds: seconds)), tz.local),
+      tz.TZDateTime.from(time, tz.local),
       notificationDetails,
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,

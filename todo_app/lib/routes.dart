@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/routes/detail/detail_task_page.dart';
 import 'package:todo_app/routes/detail/notifications_setting_page.dart';
 import 'package:todo_app/routes/detail/profile_page.dart';
+import 'package:todo_app/routes/home/adding_task_page.dart';
 import 'package:todo_app/routes/home/notifications_page.dart';
 import 'package:todo_app/routes/home/personal_page.dart';
 import 'package:todo_app/routes/home/tasks_page.dart';
@@ -10,6 +11,7 @@ class RouteGenerator {
   // Tasks
   static const String tasksPage = '/tasks';
   static const String detailTaskPage = '/detailTask';
+  static const String addingTaskPage = '/addingTask';
 
   // Personal
   static const String personalPage = '/personal';
@@ -31,7 +33,11 @@ class RouteGenerator {
         );
       case detailTaskPage:
         return MaterialPageRoute(
-          builder: (_) => const DetailTaskPage()
+          builder: (_) => DetailTaskPage(taskId: settings.arguments as String,)
+        );
+      case addingTaskPage:
+        return MaterialPageRoute(
+          builder: (_) => const AddingTaskPage()
         );
       case personalPage:
         return MaterialPageRoute(

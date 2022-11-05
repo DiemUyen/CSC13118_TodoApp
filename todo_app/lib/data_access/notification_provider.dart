@@ -5,9 +5,10 @@ import 'package:todo_app/models/notification.dart';
 class NotificationDAO {
   late final Database database;
 
-  Future<void> insert(AppNotification notification) async {
+  Future<int> insert(AppNotification notification) async {
     database = await DataProvider.dataProvider.database;
-    await database.insert('Notification', notification.toMap(),);
+    int id = await database.insert('Notification', notification.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+    return id;
   }
 
   Future<List<AppNotification>> getAllNotifications() async {

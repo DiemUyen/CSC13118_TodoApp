@@ -5,9 +5,10 @@ import 'package:todo_app/models/task.dart';
 class TaskDAO {
   late final Database database;
 
-  Future<void> insert(Task task) async {
+  Future<int> insert(Task task) async {
     database = await DataProvider.dataProvider.database;
-    await database.insert('Task', task.toMap(),);
+    int id = await database.insert('Task', task.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+    return id;
   }
 
   Future<List<Task>> getTask(int id) async {

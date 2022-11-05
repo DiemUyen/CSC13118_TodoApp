@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:todo_app/models/priority.dart';
+import 'package:intl/intl.dart';
+import 'package:todo_app/data_access/data_provider.dart';
 import 'package:todo_app/models/task.dart';
 import 'package:todo_app/utils/app_theme.dart';
 import 'package:todo_app/utils/extensions.dart';
@@ -17,61 +18,98 @@ class TasksPage extends StatefulWidget {
 class _TasksPageState extends State<TasksPage> with SingleTickerProviderStateMixin{
 
   late TabController _tabController;
-  // TODO: Read tasks and assign for today, upcoming, all tasks tab
+  final DataProvider dataProvider = DataProvider.dataProvider;
+  Future<List<Task>>? _dataFuture;
+  var allTasks = <Task>[];
+  var upcomingTasks = <Task>[];
+  var todayTasks = <Task>[];
+
 
   @override
   void initState() {
     _tabController = TabController(length: 3, vsync: this);
+    _dataFuture = getDatabase();
     super.initState();
+  }
+
+  Future<List<Task>> getDatabase() async {
+    return await dataProvider.getAllTasks();
+  }
+
+  @override
+  void dispose() {
+    dataProvider.close();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CustomAppBar(title: 'Tasks'),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+    return FutureBuilder(
+      future: _dataFuture,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        if (snapshot.hasData) {
+          allTasks = snapshot.data;
+          todayTasks = allTasks.where((element) =>
+            DateTime.now().difference(element.toDoTime).inDays == 0 && element.toDo
+          ).toList();
+          upcomingTasks = allTasks.where((element) =>
+            element.toDoTime.difference(DateTime.now()).inDays > 0 && element.toDo
+          ).toList();
+          return Scaffold(
+            appBar: const CustomAppBar(title: 'Tasks'),
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
 
-            const GreetingBar(),
-            const SizedBox(height: 8,),
+                  const GreetingBar(),
+                  const SizedBox(height: 8,),
 
-            Container(
-              child: TabBar(
-                labelStyle: context.titleSmall,
-                indicatorSize: TabBarIndicatorSize.label,
-                indicator: CircleTabIndicator(color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant, radius: 4),
-                controller: _tabController,
-                tabs: const [
-                  Tab(
-                    text: 'Today',
+                  Container(
+                    child: TabBar(
+                      labelStyle: context.titleSmall,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      indicator: CircleTabIndicator(color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant, radius: 4),
+                      controller: _tabController,
+                      tabs: const [
+                        Tab(
+                          text: 'Today',
+                        ),
+                        Tab(
+                          text: 'Upcoming',
+                        ),
+                        Tab(
+                          text: 'All',
+                        ),
+                      ],
+                    ),
                   ),
-                  Tab(
-                    text: 'Upcoming',
-                  ),
-                  Tab(
-                    text: 'All',
-                  ),
+
+                  Expanded(
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: [
+                        TodayTabView(todayTasks: todayTasks,),
+                        UpcomingTabView(upcomingTasks: upcomingTasks,),
+                        AllTabView(allTasks: allTasks,),
+                      ],
+                    ),
+                  )
                 ],
               ),
             ),
-
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: const [
-                  TodayTabView(),
-                  UpcomingTabView(),
-                  AllTabView(),
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
+          );
+        }
+        return Container();
+      },
     );
+
   }
 }
 
@@ -116,7 +154,7 @@ class GreetingBar extends StatelessWidget {
           ),
         ),
         Text(
-          'Diem Uyen',
+          DateFormat('E, d MMM yyyy').format(DateTime.now()),
           style: context.titleMedium,
         )
       ],
@@ -157,76 +195,76 @@ class _CirclePainter extends BoxPainter {
 }
 
 class TodayTabView extends StatelessWidget {
-  const TodayTabView({Key? key}) : super(key: key);
+  const TodayTabView({Key? key, required this.todayTasks}) : super(key: key);
+
+  final List<Task> todayTasks;
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      scrollDirection: Axis.vertical,
-      itemCount: 10,
-      itemBuilder: (context, index) {
-        return ToDoCard(
-          todo: Task(
-            taskId: 1,
-            name: 'Mobile design UI',
-            description: 'Design prototype for Authentication flow',
-            toDo: true,
-            toDoTime: DateTime.now(),
-            priority: /*'Advanced Mobile Development'*/PriorityTask.schedule,
-          ),
-        );
-      },
+    if (todayTasks.isNotEmpty) {
+      return ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.vertical,
+        itemCount: todayTasks.length,
+        itemBuilder: (context, index) {
+          return ToDoCard(
+            todo: todayTasks[index],
+          );
+        },
+      );
+    }
+    return const Center(
+      child: Text('You don\'t have task today\nCreate a task by pressing \'+\''),
     );
   }
 }
 
 class UpcomingTabView extends StatelessWidget {
-  const UpcomingTabView({Key? key}) : super(key: key);
+  const UpcomingTabView({Key? key, required this.upcomingTasks}) : super(key: key);
+
+  final List<Task> upcomingTasks;
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      scrollDirection: Axis.vertical,
-      itemCount: 10,
-      itemBuilder: (context, index) {
-        return ToDoCard(
-          todo: Task(
-            taskId: 1,
-            name: 'Mobile design UI',
-            description: 'Design prototype for Authentication flow',
-            toDo: true,
-            toDoTime: DateTime.now(),
-            priority: /*'Advanced Mobile Development'*/PriorityTask.delegate,
-          ),
-        );
-      },
+    if (upcomingTasks.isNotEmpty) {
+      return ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.vertical,
+        itemCount: upcomingTasks.length,
+        itemBuilder: (context, index) {
+          return ToDoCard(
+            todo: upcomingTasks[index],
+          );
+        },
+      );
+    }
+    return const Center(
+      child: Text('You don\'t have task upcoming\nCreate a task by pressing \'+\''),
     );
   }
 }
 
 class AllTabView extends StatelessWidget {
-  const AllTabView({Key? key}) : super(key: key);
+  const AllTabView({Key? key, required this.allTasks}) : super(key: key);
+
+  final List<Task> allTasks;
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      scrollDirection: Axis.vertical,
-      itemCount: 10,
-      itemBuilder: (context, index) {
-        return ToDoCard(
-          todo: Task(
-            taskId: 1,
-            name: 'Mobile design UI',
-            description: 'Design prototype for Authentication flow',
-            toDo: true,
-            toDoTime: DateTime.now(),
-            priority: /*'Advanced Mobile Development'*/PriorityTask.doFirst,
-          ),
-        );
-      },
+    if (allTasks.isNotEmpty) {
+      return ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.vertical,
+        itemCount: allTasks.length,
+        itemBuilder: (context, index) {
+          return ToDoCard(
+            todo: allTasks[index],
+          );
+        },
+      );
+    }
+    return const Center(
+      child: Text('You don\'t have task\nCreate a task by pressing \'+\''),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:todo_app/models/task.dart';
 import 'package:todo_app/routes.dart';
 import 'package:todo_app/utils/app_theme.dart';
@@ -11,18 +12,9 @@ class ToDoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int projectNameMaxLength;
-
-    /*if (todo.projectId.length > 25) {
-      projectNameMaxLength = 25;
-    }
-    else {
-      projectNameMaxLength = todo.projectId.length;
-    }*/
-
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, RouteGenerator.detailTaskPage);
+        Navigator.pushNamed(context, RouteGenerator.detailTaskPage, arguments: todo.taskId.toString());
       },
       child: Card(
         child: Padding(
@@ -55,14 +47,16 @@ class ToDoCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '${todo.toDoTime.hour} : ${todo.toDoTime.minute}',
+                          DateTime.now().difference(todo.toDoTime).inDays == 0
+                              ? DateFormat('hh:mm').format(todo.toDoTime)
+                              : DateFormat('hh:mm, E d MMM yyyy').format(todo.toDoTime),
                           style: context.bodyMedium?.copyWith(
                             fontStyle: FontStyle.italic,
                             color: AppTheme.lightTheme(null).colorScheme.primary
                           ),
                         ),
                         Text(
-                          todo.priority.toString()/*.substring(0, projectNameMaxLength - 1)*/,
+                          todo.priority.name.toUpperCase(),
                           style: context.bodyMedium?.copyWith(
                             color: AppTheme.lightTheme(null).colorScheme.tertiary
                           ),

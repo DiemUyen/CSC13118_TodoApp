@@ -1,12 +1,12 @@
 class AppNotification {
-  final int notificationId;
+  int? notificationId;
   final String title;
   final String description;
   final DateTime time;
   final int taskId;
 
-  const AppNotification({
-    required this.notificationId,
+  AppNotification({
+    this.notificationId,
     required this.title,
     required this.description,
     required this.time,
