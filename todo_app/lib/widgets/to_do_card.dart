@@ -35,33 +35,28 @@ class ToDoCard extends StatelessWidget {
                   children: [
                     Text(
                       todo.name,
-                      style: context.bodyMedium?.copyWith(
+                      style: context.bodyLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text(
+                    todo.description.isEmpty? const SizedBox(height: 0,) : Text(
                       todo.description,
-                      style: context.bodyMedium,
+                      style: context.bodyLarge,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          DateTime.now().difference(todo.toDoTime).inDays == 0
-                              ? DateFormat('hh:mm').format(todo.toDoTime)
-                              : DateFormat('hh:mm, E d MMM yyyy').format(todo.toDoTime),
-                          style: context.bodyMedium?.copyWith(
-                            fontStyle: FontStyle.italic,
-                            color: AppTheme.lightTheme(null).colorScheme.primary
-                          ),
-                        ),
-                        Text(
-                          todo.priority.name.toUpperCase(),
-                          style: context.bodyMedium?.copyWith(
-                            color: AppTheme.lightTheme(null).colorScheme.tertiary
-                          ),
-                        ),
-                      ],
+                    Text(
+                      DateFormat('dd MM yyyy').format(DateTime.now()) == DateFormat('dd MM yyyy').format(todo.toDoTime)
+                          ? DateFormat('h:mm a').format(todo.toDoTime)
+                          : DateFormat('h:mm a, E d MMM yyyy').format(todo.toDoTime),
+                      style: context.bodyLarge?.copyWith(
+                        fontStyle: FontStyle.italic,
+                        color: AppTheme.lightTheme(null).colorScheme.primary
+                      ),
+                    ),
+                    Text(
+                      todo.priority.name.toUpperCase(),
+                      style: context.bodyLarge?.copyWith(
+                        color: AppTheme.lightTheme(null).colorScheme.tertiary
+                      ),
                     )
                   ],
                 ),

@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:todo_app/models/task.dart';
+import 'package:todo_app/routes.dart';
 import 'package:todo_app/utils/app_theme.dart';
 import 'package:todo_app/utils/extensions.dart';
 
 class DataSearchDelegate extends SearchDelegate {
 
   // TODO: Change to all tasks and projects
-  List<String> searchResults = [
-    'Design Mobile UI',
-    'Write test script for SoapUI',
-    'Do homework Math',
-    'Review unit 4 HSK 1',
-    'Group tasking',
-  ];
+  final List<Task> searchResults;
+
+  DataSearchDelegate(this.searchResults);
 
   @override
   List<Widget>? buildActions(BuildContext context) {
@@ -52,25 +50,35 @@ class DataSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final suggestions = query.isEmpty
+    final List<Task> suggestions = query.isEmpty
         ? []
-        : searchResults.where((element) => element.toLowerCase().contains(query.toLowerCase())).toList();
+        : searchResults.where((element) => element.name.toLowerCase().contains(query.toLowerCase())).toList();
 
-    return ListView.builder(
-      itemCount: suggestions.length,
-      itemBuilder: (context, index) {
-        final suggestion = suggestions[index];
-        return ListTile(
-          title: Text(
-            suggestion,
-            style: context.bodyLarge,
-          ),
-          onTap: () {
-            query = suggestion;
-            showResults(context);
-          },
-        );
-      },
+    if (suggestions.isNotEmpty) {
+      return ListView.builder(
+        itemCount: suggestions.length,
+        itemBuilder: (context, index) {
+          final suggestion = suggestions[index];
+          return ListTile(
+            title: Text(
+              suggestion.name,
+              style: context.bodyLarge,
+            ),
+            onTap: () {
+              query = suggestion.name;
+              //showResults(context);
+              Navigator.pushNamed(context, RouteGenerator.detailTaskPage, arguments: suggestion.taskId.toString());
+            },
+          );
+        },
+      );
+    }
+    
+    return Center(
+      child: Text(
+        'No task found',
+        style: context.bodyLarge,
+      ),
     );
   }
 

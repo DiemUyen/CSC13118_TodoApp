@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_app/data_access/data_provider.dart';
 import 'package:todo_app/models/task.dart';
+import 'package:todo_app/utils/app_theme.dart';
 import 'package:todo_app/utils/extensions.dart';
 
 class DetailTaskPage extends StatefulWidget {
@@ -15,15 +17,12 @@ class DetailTaskPage extends StatefulWidget {
 
 class _DetailTaskPageState extends State<DetailTaskPage> {
   final dataProvider = DataProvider.dataProvider;
-  Task? task;
+  Future<List<Task>>? _dataFuture;
+  late Task task;
 
   @override
   void initState() {
-    getTask().then((value) {
-      setState(() {
-        task = value[0];
-      });
-    });
+    _dataFuture = getTask();
     super.initState();
   }
 
@@ -40,39 +39,113 @@ class _DetailTaskPageState extends State<DetailTaskPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${task?.name}',
-                style: context.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
+    return FutureBuilder(
+      future: _dataFuture,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const SafeArea(
+            child: Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
+        }
+
+        if (snapshot.hasData) {
+          task = snapshot.data[0];
+          return SafeArea(
+            child: Scaffold(
+              appBar: AppBar(),
+              body: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        FaIcon(
+                          FontAwesomeIcons.penFancy,
+                          color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant,
+                        ),
+                        const SizedBox(width: 8,),
+                        Text(
+                          task.name,
+                          style: context.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16,),
+                    Row(
+                      children: [
+                        FaIcon(
+                          FontAwesomeIcons.alignLeft,
+                          color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant,
+                        ),
+                        const SizedBox(width: 8,),
+                        Text(
+                          task.description.isNotEmpty? task.description : 'No description',
+                          style: context.bodyLarge,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16,),
+                    Row(
+                      children: [
+                        FaIcon(
+                          FontAwesomeIcons.calendar,
+                          color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant,
+                        ),
+                        const SizedBox(width: 8,),
+                        Text(
+                          DateFormat('hh:mm, d MMM').format(task.toDoTime),
+                          style: context.bodyLarge,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16,),
+                    Row(
+                      children: [
+                        FaIcon(
+                          FontAwesomeIcons.flag,
+                          color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant,
+                        ),
+                        const SizedBox(width: 8,),
+                        Text(
+                          task.priority.name.toUpperCase(),
+                          style: context.bodyLarge,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16,),
+                    Row(
+                      children: [
+                        FaIcon(
+                          FontAwesomeIcons.check,
+                          color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant,
+                        ),
+                        const SizedBox(width: 8,),
+                        Text(
+                          task.toDo? 'TO DO' : 'COMPLETED',
+                          style: context.bodyLarge,
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 8,),
-              Text(
-                '${task?.description}',
-                style: context.bodyMedium,
-              ),
-              const SizedBox(height: 8,),
-              Text(
-                DateFormat('hh:mm, d MMM').format(task != null? task!.toDoTime:DateTime.now()),
-                style: context.bodyMedium,
-              ),
-              const SizedBox(height: 8,),
-              Text(
-                '${task?.priority}',
-                style: context.bodyMedium,
-              )
-            ],
+            ),
+          );
+        }
+
+        return SafeArea(
+          child: Scaffold(
+            body: Container(),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

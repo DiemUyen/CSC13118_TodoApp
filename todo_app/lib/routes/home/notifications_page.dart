@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/models/notification.dart';
+import 'package:todo_app/models/task.dart';
 import 'package:todo_app/widgets/custom_app_bar.dart';
 import 'package:todo_app/widgets/notification_card.dart';
 
 class NotificationsPage extends StatefulWidget {
-  const NotificationsPage({Key? key}) : super(key: key);
+  const NotificationsPage({Key? key, required this.allTasks}) : super(key: key);
 
+  final List<Task> allTasks;
   @override
   State<NotificationsPage> createState() => _NotificationsPageState();
 }
@@ -28,7 +30,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Notification',),
+      appBar: CustomAppBar(title: 'Notification', allTasks: widget.allTasks,),
       body: ListView.builder(
         shrinkWrap: true,
         scrollDirection: Axis.vertical,

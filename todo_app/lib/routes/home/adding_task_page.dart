@@ -5,6 +5,7 @@ import 'package:todo_app/data_access/data_provider.dart';
 import 'package:todo_app/models/notification.dart';
 import 'package:todo_app/models/priority.dart';
 import 'package:todo_app/models/task.dart';
+import 'package:todo_app/routes.dart';
 import 'package:todo_app/service/local_notice_service.dart';
 import 'package:todo_app/utils/app_theme.dart';
 import 'package:todo_app/utils/extensions.dart';
@@ -22,17 +23,17 @@ class _AddingTaskPageState extends State<AddingTaskPage> {
   final _formKey = GlobalKey<FormState>();
   final dataProvider = DataProvider.dataProvider;
   final priorityName = {
-    'Do First': PriorityTask.doFirst,
-    'Schedule': PriorityTask.schedule,
-    'Delegate': PriorityTask.delegate,
-    'Don\'t Do': PriorityTask.doNotDo,
+    'DO FIRST': PriorityTask.doFirst,
+    'SCHEDULE': PriorityTask.schedule,
+    'DELEGATE': PriorityTask.delegate,
+    'DON\'T DO': PriorityTask.doNotDo,
   };
 
   final _taskNameController = TextEditingController();
   final _taskDescController = TextEditingController();
   var _dateSelected = DateTime.now();
   var _timeSelected = TimeOfDay.now();
-  var _priority = 'Do First';
+  var _priority = 'DO FIRST';
 
 
   @override
@@ -94,14 +95,16 @@ class _AddingTaskPageState extends State<AddingTaskPage> {
     if (_formKey.currentState!.validate()) {
       final task = await createTaskDb();
       final noti = await createNotificationDb(task);
-      await service.showScheduleNotification(
-        id: noti.notificationId!,
-        title: noti.title,
-        body: noti.description,
-        time: noti.time,
-        payload: noti.taskId.toString(),
-      );
-      Navigator.pop(context);
+      if (task.toDoTime.subtract(const Duration(minutes: 10)).isAfter(DateTime.now())) {
+        await service.showScheduleNotification(
+          id: noti.notificationId!,
+          title: noti.title,
+          body: noti.description,
+          time: noti.time,
+          payload: noti.taskId.toString(),
+        );
+      }
+      Navigator.pop(context, true);
     }
   }
 
@@ -282,10 +285,10 @@ class _SelectedPriority extends StatelessWidget {
   final String priority;
   final void Function(String?) onChanged;
   static const priorities = [
-    'Do First',
-    'Schedule',
-    'Delegate',
-    'Don\'t Do',
+    'DO FIRST',
+    'SCHEDULE',
+    'DELEGATE',
+    'DON\'T DO',
   ];
 
   @override

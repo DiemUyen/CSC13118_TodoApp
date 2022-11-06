@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:todo_app/data_access/data_provider.dart';
 import 'package:todo_app/models/task.dart';
 import 'package:todo_app/utils/app_theme.dart';
 import 'package:todo_app/utils/extensions.dart';
@@ -9,7 +8,9 @@ import 'package:todo_app/widgets/custom_app_bar.dart';
 import 'package:todo_app/widgets/to_do_card.dart';
 
 class TasksPage extends StatefulWidget {
-  const TasksPage({Key? key}) : super(key: key);
+  const TasksPage({Key? key, required this.allTasks}) : super(key: key);
+
+  final List<Task> allTasks;
 
   @override
   State<TasksPage> createState() => _TasksPageState();
@@ -18,9 +19,6 @@ class TasksPage extends StatefulWidget {
 class _TasksPageState extends State<TasksPage> with SingleTickerProviderStateMixin{
 
   late TabController _tabController;
-  final DataProvider dataProvider = DataProvider.dataProvider;
-  Future<List<Task>>? _dataFuture;
-  var allTasks = <Task>[];
   var upcomingTasks = <Task>[];
   var todayTasks = <Task>[];
 
@@ -28,86 +26,64 @@ class _TasksPageState extends State<TasksPage> with SingleTickerProviderStateMix
   @override
   void initState() {
     _tabController = TabController(length: 3, vsync: this);
-    _dataFuture = getDatabase();
+    todayTasks = widget.allTasks.where((element) =>
+      element.toDo
+        && DateFormat('dd MM yyyy').format(DateTime.now()) == DateFormat('dd MM yyyy').format(element.toDoTime)
+    ).toList();
+    upcomingTasks = widget.allTasks.where((element) =>
+      element.toDo
+        && DateFormat('dd MM yyyy').format(DateTime.now()) != DateFormat('dd MM yyyy').format(element.toDoTime)
+        && element.toDoTime.isAfter(DateTime.now())
+    ).toList();
     super.initState();
-  }
-
-  Future<List<Task>> getDatabase() async {
-    return await dataProvider.getAllTasks();
-  }
-
-  @override
-  void dispose() {
-    dataProvider.close();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _dataFuture,
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-        if (snapshot.hasData) {
-          allTasks = snapshot.data;
-          todayTasks = allTasks.where((element) =>
-            DateTime.now().difference(element.toDoTime).inDays == 0 && element.toDo
-          ).toList();
-          upcomingTasks = allTasks.where((element) =>
-            element.toDoTime.difference(DateTime.now()).inDays > 0 && element.toDo
-          ).toList();
-          return Scaffold(
-            appBar: const CustomAppBar(title: 'Tasks'),
-            body: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+    return Scaffold(
+      appBar: CustomAppBar(title: 'Tasks', allTasks: widget.allTasks,),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
 
-                  const GreetingBar(),
-                  const SizedBox(height: 8,),
+            const GreetingBar(),
+            const SizedBox(height: 8,),
 
-                  Container(
-                    child: TabBar(
-                      labelStyle: context.titleSmall,
-                      indicatorSize: TabBarIndicatorSize.label,
-                      indicator: CircleTabIndicator(color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant, radius: 4),
-                      controller: _tabController,
-                      tabs: const [
-                        Tab(
-                          text: 'Today',
-                        ),
-                        Tab(
-                          text: 'Upcoming',
-                        ),
-                        Tab(
-                          text: 'All',
-                        ),
-                      ],
-                    ),
+            Container(
+              child: TabBar(
+                labelStyle: context.titleSmall,
+                indicatorSize: TabBarIndicatorSize.label,
+                indicator: CircleTabIndicator(color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant, radius: 4),
+                controller: _tabController,
+                tabs: const [
+                  Tab(
+                    text: 'Today',
                   ),
-
-                  Expanded(
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: [
-                        TodayTabView(todayTasks: todayTasks,),
-                        UpcomingTabView(upcomingTasks: upcomingTasks,),
-                        AllTabView(allTasks: allTasks,),
-                      ],
-                    ),
-                  )
+                  Tab(
+                    text: 'Upcoming',
+                  ),
+                  Tab(
+                    text: 'All',
+                  ),
                 ],
               ),
             ),
-          );
-        }
-        return Container();
-      },
+
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  TodayTabView(todayTasks: todayTasks,),
+                  UpcomingTabView(upcomingTasks: upcomingTasks,),
+                  AllTabView(allTasks: widget.allTasks,),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
     );
 
   }
