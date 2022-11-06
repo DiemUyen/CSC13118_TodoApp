@@ -25,7 +25,7 @@ class DataProvider {
       version: version,
       onCreate: (Database db, int version) async {
         await db.execute(
-          'CREATE TABLE Task(taskId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT, description TEXT, toDo INTEGER, toDoTime TEXT, priority INTEGER)'
+          'CREATE TABLE Task(taskId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT, description TEXT, toDoTime TEXT, priority INTEGER)'
         );
         await db.execute(
           'CREATE TABLE Notification(notificationId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title TEXT, description TEXT, time TEXT, taskId INTEGER)'
@@ -74,6 +74,13 @@ class DataProvider {
     return id;
   }
 
+  Future getNotifications(int taskId) async {
+    final db = await DataProvider.dataProvider.database;
+    final List<Map<String, dynamic>> maps = await db.query('Notification', where: 'taskId = ?', whereArgs: [taskId]);
+    final records = List.generate(maps.length, (index) => AppNotification.fromMap(maps[index]));
+    return records[0].notificationId;
+  }
+
   Future<List<AppNotification>> getAllNotifications() async {
     final db = await DataProvider.dataProvider.database;
     final List<Map<String, dynamic>> maps = await db.query('Notification');
@@ -81,12 +88,12 @@ class DataProvider {
     return List.generate(maps.length, (index) => AppNotification.fromMap(maps[index]));
   }
 
-  Future<void> delete(int id) async {
+  Future<void> deleteNotification(int notificationId) async {
     final db = await DataProvider.dataProvider.database;
-    await db.delete('Notification',where: 'notificationId = ?',whereArgs: [id]);
+    await db.delete('Notification',where: 'notificationId = ?',whereArgs: [notificationId]);
   }
 
-  Future<void> update(AppNotification notification) async {
+  Future<void> updateNotification(AppNotification notification) async {
     final db = await DataProvider.dataProvider.database;
     await db.update('Notification', notification.toMap(), where: 'notificationId = ?', whereArgs: [notification.taskId]);
   }

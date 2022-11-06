@@ -7,7 +7,6 @@ import 'package:todo_app/routes.dart';
 
 class LocalNotificationService {
   final _localNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  //final onNotificationClick = BehaviorSubject();
 
   // Singleton
   static LocalNotificationService? _localNotificationService;
@@ -98,6 +97,9 @@ class LocalNotificationService {
     );
   }
 
-  //final pendingNotificationRequests = await _localNotificationsPlugin.pendingNotificationRequests();
-
+  Future<void> cancelNotification({
+    required int id,
+  }) async {
+    await _localNotificationsPlugin.cancel(id);
+  }
 }

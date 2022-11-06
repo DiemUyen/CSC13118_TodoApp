@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/routes/detail/detail_task_page.dart';
+import 'package:todo_app/routes/detail/editing_task_page.dart';
 import 'package:todo_app/routes/detail/notifications_setting_page.dart';
 import 'package:todo_app/routes/detail/profile_page.dart';
 import 'package:todo_app/routes/home.dart';
@@ -11,17 +12,14 @@ class RouteGenerator {
   static const String homePage = '/home';
 
   // Tasks
-  static const String tasksPage = '/tasks';
   static const String detailTaskPage = '/detailTask';
   static const String addingTaskPage = '/addingTask';
+  static const String editingTaskPage = '/editingTask';
 
   // Personal
   static const String personalPage = '/personal';
   static const String profilePage = '/profile';
   static const String notificationsSettingPage = '/notificationsSetting';
-
-  // Notification
-  static const String notificationsPage = '/notifications';
 
   // Private constructor
   RouteGenerator._();

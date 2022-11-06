@@ -3,11 +3,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_app/data_access/data_provider.dart';
 import 'package:todo_app/models/task.dart';
+import 'package:todo_app/service/local_notice_service.dart';
 import 'package:todo_app/utils/app_theme.dart';
 import 'package:todo_app/utils/extensions.dart';
+import 'package:todo_app/widgets/loading_circle.dart';
 
 class DetailTaskPage extends StatefulWidget {
-  const DetailTaskPage({Key? key, required this.taskId}) : super(key: key);
+  const DetailTaskPage({Key? key, required this.taskId,}) : super(key: key);
 
   final String taskId;
 
@@ -43,101 +45,23 @@ class _DetailTaskPageState extends State<DetailTaskPage> {
       future: _dataFuture,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const SafeArea(
-            child: Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          );
+          return const LoadingCircle();
         }
 
         if (snapshot.hasData) {
-          task = snapshot.data[0];
-          return SafeArea(
-            child: Scaffold(
-              appBar: AppBar(),
-              body: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        FaIcon(
-                          FontAwesomeIcons.penFancy,
-                          color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant,
-                        ),
-                        const SizedBox(width: 8,),
-                        Text(
-                          task.name,
-                          style: context.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16,),
-                    Row(
-                      children: [
-                        FaIcon(
-                          FontAwesomeIcons.alignLeft,
-                          color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant,
-                        ),
-                        const SizedBox(width: 8,),
-                        Text(
-                          task.description.isNotEmpty? task.description : 'No description',
-                          style: context.bodyLarge,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16,),
-                    Row(
-                      children: [
-                        FaIcon(
-                          FontAwesomeIcons.calendar,
-                          color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant,
-                        ),
-                        const SizedBox(width: 8,),
-                        Text(
-                          DateFormat('hh:mm, d MMM').format(task.toDoTime),
-                          style: context.bodyLarge,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16,),
-                    Row(
-                      children: [
-                        FaIcon(
-                          FontAwesomeIcons.flag,
-                          color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant,
-                        ),
-                        const SizedBox(width: 8,),
-                        Text(
-                          task.priority.name.toUpperCase(),
-                          style: context.bodyLarge,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16,),
-                    Row(
-                      children: [
-                        FaIcon(
-                          FontAwesomeIcons.check,
-                          color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant,
-                        ),
-                        const SizedBox(width: 8,),
-                        Text(
-                          task.toDo? 'TO DO' : 'COMPLETED',
-                          style: context.bodyLarge,
-                        ),
-                      ],
-                    ),
-                  ],
+          if ((snapshot.data as List<Task>).isEmpty) {
+            return SafeArea(
+              child: Scaffold(
+                appBar: AppBar(),
+                body: Center(
+                  child: Text('You have done this task', style: context.bodyLarge,),
                 ),
               ),
-            ),
-          );
+            );
+          }
+
+          task = snapshot.data[0];
+          return DetailTask(task: task);
         }
 
         return SafeArea(
@@ -146,6 +70,90 @@ class _DetailTaskPageState extends State<DetailTaskPage> {
           ),
         );
       },
+    );
+  }
+}
+
+class DetailTask extends StatelessWidget {
+  const DetailTask({
+    Key? key,
+    required this.task,
+  }) : super(key: key);
+
+  final Task task;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  FaIcon(
+                    FontAwesomeIcons.penFancy,
+                    color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 8,),
+                  Text(
+                    task.name,
+                    style: context.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16,),
+              Row(
+                children: [
+                  FaIcon(
+                    FontAwesomeIcons.alignLeft,
+                    color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 8,),
+                  Text(
+                    task.description.isNotEmpty? task.description : 'No description',
+                    style: context.bodyLarge,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16,),
+              Row(
+                children: [
+                  FaIcon(
+                    FontAwesomeIcons.calendar,
+                    color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 8,),
+                  Text(
+                    DateFormat('hh:mm, d MMM').format(task.toDoTime),
+                    style: context.bodyLarge,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16,),
+              Row(
+                children: [
+                  FaIcon(
+                    FontAwesomeIcons.flag,
+                    color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 8,),
+                  Text(
+                    task.priority.name.toUpperCase(),
+                    style: context.bodyLarge,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16,),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

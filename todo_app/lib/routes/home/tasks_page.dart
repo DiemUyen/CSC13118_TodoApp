@@ -8,9 +8,12 @@ import 'package:todo_app/widgets/custom_app_bar.dart';
 import 'package:todo_app/widgets/to_do_card.dart';
 
 class TasksPage extends StatefulWidget {
-  const TasksPage({Key? key, required this.allTasks}) : super(key: key);
+  const TasksPage({Key? key, required this.allTasks, required this.onDoneTaskCallback, required this.onUpdateTaskCallback, required this.onDeleteTaskCallback}) : super(key: key);
 
   final List<Task> allTasks;
+  final void Function(int id) onDoneTaskCallback;
+  final void Function() onUpdateTaskCallback;
+  final void Function(int?) onDeleteTaskCallback;
 
   @override
   State<TasksPage> createState() => _TasksPageState();
@@ -22,17 +25,13 @@ class _TasksPageState extends State<TasksPage> with SingleTickerProviderStateMix
   var upcomingTasks = <Task>[];
   var todayTasks = <Task>[];
 
-
   @override
   void initState() {
     _tabController = TabController(length: 3, vsync: this);
-    todayTasks = widget.allTasks.where((element) =>
-      element.toDo
-        && DateFormat('dd MM yyyy').format(DateTime.now()) == DateFormat('dd MM yyyy').format(element.toDoTime)
+    todayTasks = widget.allTasks.where((element) =>DateFormat('dd MM yyyy').format(DateTime.now()) == DateFormat('dd MM yyyy').format(element.toDoTime)
     ).toList();
     upcomingTasks = widget.allTasks.where((element) =>
-      element.toDo
-        && DateFormat('dd MM yyyy').format(DateTime.now()) != DateFormat('dd MM yyyy').format(element.toDoTime)
+    DateFormat('dd MM yyyy').format(DateTime.now()) != DateFormat('dd MM yyyy').format(element.toDoTime)
         && element.toDoTime.isAfter(DateTime.now())
     ).toList();
     super.initState();
@@ -75,9 +74,21 @@ class _TasksPageState extends State<TasksPage> with SingleTickerProviderStateMix
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  TodayTabView(todayTasks: todayTasks,),
-                  UpcomingTabView(upcomingTasks: upcomingTasks,),
-                  AllTabView(allTasks: widget.allTasks,),
+                  TodayTabView(
+                    todayTasks: todayTasks,
+                    onChangedCallback: widget.onDoneTaskCallback,
+                    onDeleteCallback: widget.onDeleteTaskCallback,
+                  ),
+                  UpcomingTabView(
+                    upcomingTasks: upcomingTasks,
+                    onDoneTaskCallback: widget.onDoneTaskCallback,
+                    onDeleteCallback: widget.onDeleteTaskCallback,
+                  ),
+                  AllTabView(
+                    allTasks: widget.allTasks,
+                    onChangedCallback: widget.onDoneTaskCallback,
+                    onDeleteCallback: widget.onDeleteTaskCallback,
+                  ),
                 ],
               ),
             )
@@ -85,7 +96,6 @@ class _TasksPageState extends State<TasksPage> with SingleTickerProviderStateMix
         ),
       ),
     );
-
   }
 }
 
@@ -171,9 +181,11 @@ class _CirclePainter extends BoxPainter {
 }
 
 class TodayTabView extends StatelessWidget {
-  const TodayTabView({Key? key, required this.todayTasks}) : super(key: key);
+  const TodayTabView({Key? key, required this.todayTasks, required this.onChangedCallback, required this.onDeleteCallback,}) : super(key: key);
 
   final List<Task> todayTasks;
+  final void Function(int id) onChangedCallback;
+  final void Function(int?) onDeleteCallback;
 
   @override
   Widget build(BuildContext context) {
@@ -183,8 +195,46 @@ class TodayTabView extends StatelessWidget {
         scrollDirection: Axis.vertical,
         itemCount: todayTasks.length,
         itemBuilder: (context, index) {
-          return ToDoCard(
-            todo: todayTasks[index],
+          return Dismissible(
+            key: ValueKey<Task>(todayTasks[index]),
+            confirmDismiss: (DismissDirection direction) async {
+              final result = await showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text('Delete Confirmation'),
+                    content: const Text('Are you sure you want to delete this task?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context, false);
+                          onDeleteCallback(todayTasks[index].taskId);
+                        },
+                        child: const Text('Cancel'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context, true);
+                        },
+                        style: ButtonStyle(
+                          textStyle: MaterialStateProperty.all(context.bodyMedium),
+                          backgroundColor: MaterialStateProperty.all(AppTheme.lightTheme(null).colorScheme.primary,),
+                          foregroundColor: MaterialStateProperty.all(AppTheme.lightTheme(null).colorScheme.onPrimary,),
+                        ),
+                        child: const Text('Delete'),
+                      )
+                    ],
+                  );
+                }
+              );
+              if (result as bool) {
+                onDeleteCallback(todayTasks[index].taskId);
+              }
+            },
+            child: ToDoCard(
+              todo: todayTasks[index],
+              onChangedCallback: onChangedCallback,
+            ),
           );
         },
       );
@@ -196,9 +246,11 @@ class TodayTabView extends StatelessWidget {
 }
 
 class UpcomingTabView extends StatelessWidget {
-  const UpcomingTabView({Key? key, required this.upcomingTasks}) : super(key: key);
+  const UpcomingTabView({Key? key, required this.upcomingTasks, required this.onDoneTaskCallback, required this.onDeleteCallback,}) : super(key: key);
 
   final List<Task> upcomingTasks;
+  final void Function(int id) onDoneTaskCallback;
+  final void Function(int?) onDeleteCallback;
 
   @override
   Widget build(BuildContext context) {
@@ -208,8 +260,45 @@ class UpcomingTabView extends StatelessWidget {
         scrollDirection: Axis.vertical,
         itemCount: upcomingTasks.length,
         itemBuilder: (context, index) {
-          return ToDoCard(
-            todo: upcomingTasks[index],
+          return Dismissible(
+            key: ValueKey<Task>(upcomingTasks[index]),
+            confirmDismiss: (DismissDirection direction) async {
+              final result = await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text('Delete Confirmation'),
+                      content: const Text('Are you sure you want to delete this task?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context, false);
+                          },
+                          child: const Text('Cancel'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context, true);
+                          },
+                          style: ButtonStyle(
+                            textStyle: MaterialStateProperty.all(context.bodyMedium),
+                            backgroundColor: MaterialStateProperty.all(AppTheme.lightTheme(null).colorScheme.primary,),
+                            foregroundColor: MaterialStateProperty.all(AppTheme.lightTheme(null).colorScheme.onPrimary,),
+                          ),
+                          child: const Text('Delete'),
+                        )
+                      ],
+                    );
+                  }
+              );
+              if (result as bool) {
+                onDeleteCallback(upcomingTasks[index].taskId);
+              }
+            },
+            child: ToDoCard(
+              todo: upcomingTasks[index],
+              onChangedCallback: onDoneTaskCallback,
+            ),
           );
         },
       );
@@ -221,9 +310,11 @@ class UpcomingTabView extends StatelessWidget {
 }
 
 class AllTabView extends StatelessWidget {
-  const AllTabView({Key? key, required this.allTasks}) : super(key: key);
+  const AllTabView({Key? key, required this.allTasks, required this.onChangedCallback, required this.onDeleteCallback,}) : super(key: key);
 
   final List<Task> allTasks;
+  final void Function(int id) onChangedCallback;
+  final void Function(int?) onDeleteCallback;
 
   @override
   Widget build(BuildContext context) {
@@ -233,8 +324,46 @@ class AllTabView extends StatelessWidget {
         scrollDirection: Axis.vertical,
         itemCount: allTasks.length,
         itemBuilder: (context, index) {
-          return ToDoCard(
-            todo: allTasks[index],
+          return Dismissible(
+            key: ValueKey<Task>(allTasks[index]),
+            confirmDismiss: (DismissDirection direction) async {
+              final result = await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text('Delete Confirmation'),
+                      content: const Text('Are you sure you want to delete this task?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context, false);
+                          },
+                          child: const Text('Cancel'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context, true);
+                            onDeleteCallback(allTasks[index].taskId);
+                          },
+                          style: ButtonStyle(
+                            textStyle: MaterialStateProperty.all(context.bodyMedium),
+                            backgroundColor: MaterialStateProperty.all(AppTheme.lightTheme(null).colorScheme.primary,),
+                            foregroundColor: MaterialStateProperty.all(AppTheme.lightTheme(null).colorScheme.onPrimary,),
+                          ),
+                          child: const Text('Delete'),
+                        )
+                      ],
+                    );
+                  }
+              );
+              if (result as bool) {
+                onDeleteCallback(allTasks[index].taskId);
+              }
+            },
+            child: ToDoCard(
+              todo: allTasks[index],
+              onChangedCallback: onChangedCallback,
+            ),
           );
         },
       );

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/data_access/data_provider.dart';
 import 'package:todo_app/models/notification.dart';
 import 'package:todo_app/models/task.dart';
 import 'package:todo_app/widgets/custom_app_bar.dart';
+import 'package:todo_app/widgets/loading_circle.dart';
 import 'package:todo_app/widgets/notification_card.dart';
 
 class NotificationsPage extends StatefulWidget {
@@ -14,31 +16,60 @@ class NotificationsPage extends StatefulWidget {
 
 class _NotificationsPageState extends State<NotificationsPage> {
 
-  var notifications = <AppNotification>[
-    AppNotification(notificationId: 1, title: 'title', description: 'description', time: DateTime(2022, 11, 4, 23, 15), taskId: 1,),
-    AppNotification(notificationId: 2, title: 'title 2', description: 'description 2', time: DateTime(2022, 11, 4, 20, 30), taskId: 2,),
-    AppNotification(notificationId: 3, title: 'title 3', description: 'description 3', time: DateTime(2022, 11, 4, 12, 15), taskId: 3,),
-    AppNotification(notificationId: 4, title: 'title 4', description: 'description 4', time: DateTime(2022, 11, 2, 10, 00), taskId: 4,),
-  ];
+  final _dataProvider = DataProvider.dataProvider;
+  Future<List<AppNotification>>? _dataFuture;
+  var allNotifications = <AppNotification>[];
+  var sentNotification = <AppNotification>[];
 
   @override
   void initState() {
-    // TODO: implement initState
+    _dataFuture = getNotifications();
     super.initState();
+  }
+
+  Future<List<AppNotification>> getNotifications() async {
+    return await _dataProvider.getAllNotifications();
+  }
+
+  @override
+  void dispose() {
+    _dataProvider.close();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: 'Notification', allTasks: widget.allTasks,),
-      body: ListView.builder(
-        shrinkWrap: true,
-        scrollDirection: Axis.vertical,
-        itemCount: notifications.length,
-        itemBuilder: (context, index) {
-          return NotificationCard(noti: notifications[index],);
-        },
-      ),
+    return FutureBuilder(
+      future: _dataFuture,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const LoadingCircle();
+        }
+
+        if (snapshot.hasData) {
+          allNotifications = snapshot.data;
+          sentNotification =
+              allNotifications.where((element) => element.time.isBefore(DateTime.now())).toList();
+          sentNotification.sort((a, b) => b.time.compareTo(a.time));
+          return Scaffold(
+            appBar: CustomAppBar(title: 'Notification', allTasks: widget.allTasks,),
+            body: ListView.builder(
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              itemCount: sentNotification.length,
+              itemBuilder: (context, index) {
+                return NotificationCard(noti: sentNotification[index],);
+              },
+            ),
+          );
+        }
+
+        return SafeArea(
+          child: Scaffold(
+            body: Container(),
+          ),
+        );
+      },
     );
   }
 }

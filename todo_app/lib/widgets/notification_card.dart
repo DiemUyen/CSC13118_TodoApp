@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:todo_app/models/notification.dart';
+import 'package:todo_app/routes.dart';
 import 'package:todo_app/utils/app_theme.dart';
 import 'package:todo_app/utils/extensions.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -14,7 +15,7 @@ class NotificationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // TODO: Navigate to task with id is payload
+        Navigator.pushNamed(context, RouteGenerator.detailTaskPage, arguments: noti.taskId.toString());
       },
       child: Card(
         child: Padding(
@@ -28,24 +29,20 @@ class NotificationCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    noti.title,
+                    noti.description,
                     style: context.bodyMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  const SizedBox(height: 8,),
                   Text(
-                    noti.description,
-                    style: context.bodyMedium,
-                  ),
+                    timeago.format(noti.time),
+                    style: context.bodyMedium?.copyWith(
+                      color: AppTheme.lightTheme(null).colorScheme.tertiary,
+                    ),
+                  )
                 ],
               ),
-              const Spacer(),
-              Text(
-                timeago.format(noti.time),
-                style: context.bodyMedium?.copyWith(
-                  color: AppTheme.lightTheme(null).colorScheme.tertiary,
-                ),
-              )
             ],
           ),
         ),

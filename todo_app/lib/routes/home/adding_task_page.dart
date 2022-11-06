@@ -5,7 +5,6 @@ import 'package:todo_app/data_access/data_provider.dart';
 import 'package:todo_app/models/notification.dart';
 import 'package:todo_app/models/priority.dart';
 import 'package:todo_app/models/task.dart';
-import 'package:todo_app/routes.dart';
 import 'package:todo_app/service/local_notice_service.dart';
 import 'package:todo_app/utils/app_theme.dart';
 import 'package:todo_app/utils/extensions.dart';
@@ -94,8 +93,8 @@ class _AddingTaskPageState extends State<AddingTaskPage> {
   void createTask() async {
     if (_formKey.currentState!.validate()) {
       final task = await createTaskDb();
-      final noti = await createNotificationDb(task);
       if (task.toDoTime.subtract(const Duration(minutes: 10)).isAfter(DateTime.now())) {
+        final noti = await createNotificationDb(task);
         await service.showScheduleNotification(
           id: noti.notificationId!,
           title: noti.title,
@@ -112,7 +111,6 @@ class _AddingTaskPageState extends State<AddingTaskPage> {
     var task = Task(
       name: _taskNameController.text,
       description: _taskDescController.text,
-      toDo: true,
       toDoTime: DateTime(_dateSelected.year, _dateSelected.month, _dateSelected.day, _timeSelected.hour, _timeSelected.minute),
       priority: priorityName[_priority]!,
     );
