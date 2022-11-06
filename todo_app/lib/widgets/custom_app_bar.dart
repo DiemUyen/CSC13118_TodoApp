@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:todo_app/models/task.dart';
 import 'package:todo_app/utils/app_theme.dart';
-import 'package:todo_app/utils/extensions.dart';
 import 'package:todo_app/widgets/data_search_delegate.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget{
@@ -16,8 +15,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget{
     return AppBar(
       title: Text(
         title,
-        style: context.titleLarge?.copyWith(
-          fontWeight: FontWeight.bold,
+        style: TextStyle(
+          fontWeight: FontWeight.w500,
           color: AppTheme.lightTheme(null).colorScheme.onSurface
         ),
       ),

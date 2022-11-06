@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/data_access/data_provider.dart';
 import 'package:todo_app/models/notification.dart';
-import 'package:todo_app/models/task.dart';
-import 'package:todo_app/widgets/custom_app_bar.dart';
 import 'package:todo_app/widgets/loading_circle.dart';
 import 'package:todo_app/widgets/notification_card.dart';
 
 class NotificationsPage extends StatefulWidget {
-  const NotificationsPage({Key? key, required this.allTasks}) : super(key: key);
+  const NotificationsPage({Key? key,}) : super(key: key);
 
-  final List<Task> allTasks;
   @override
   State<NotificationsPage> createState() => _NotificationsPageState();
 }
@@ -52,7 +49,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
               allNotifications.where((element) => element.time.isBefore(DateTime.now())).toList();
           sentNotification.sort((a, b) => b.time.compareTo(a.time));
           return Scaffold(
-            appBar: CustomAppBar(title: 'Notification', allTasks: widget.allTasks,),
+            //appBar: CustomAppBar(title: 'Notification', allTasks: widget.allTasks,),
             body: ListView.builder(
               shrinkWrap: true,
               scrollDirection: Axis.vertical,

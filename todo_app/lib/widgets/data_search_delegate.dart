@@ -3,11 +3,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:todo_app/models/task.dart';
 import 'package:todo_app/routes.dart';
 import 'package:todo_app/utils/app_theme.dart';
-import 'package:todo_app/utils/extensions.dart';
 
 class DataSearchDelegate extends SearchDelegate {
 
-  // TODO: Change to all tasks and projects
   final List<Task> searchResults;
 
   DataSearchDelegate(this.searchResults);
@@ -41,7 +39,7 @@ class DataSearchDelegate extends SearchDelegate {
     return Center(
       child: Text(
         query,
-        style: context.bodyLarge?.copyWith(
+        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
             color: AppTheme.lightTheme(null).colorScheme.onSurface
         ),
       ),
@@ -62,11 +60,9 @@ class DataSearchDelegate extends SearchDelegate {
           return ListTile(
             title: Text(
               suggestion.name,
-              style: context.bodyLarge,
             ),
             onTap: () {
               query = suggestion.name;
-              //showResults(context);
               Navigator.pushNamed(context, RouteGenerator.detailTaskPage, arguments: suggestion.taskId.toString());
             },
           );
@@ -77,19 +73,8 @@ class DataSearchDelegate extends SearchDelegate {
     return Center(
       child: Text(
         'No task found',
-        style: context.bodyLarge,
+        style: Theme.of(context).textTheme.bodyLarge,
       ),
     );
   }
-
-  @override
-  ThemeData appBarTheme(BuildContext context) {
-    var superThemeData = super.appBarTheme(context);
-    return superThemeData.copyWith(
-      textTheme: superThemeData.textTheme.copyWith(
-        headline6: context.bodyLarge
-      )
-    );
-  }
-
 }

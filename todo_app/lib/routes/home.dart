@@ -5,6 +5,7 @@ import 'package:todo_app/routes.dart';
 import 'package:todo_app/routes/home/notifications_page.dart';
 import 'package:todo_app/routes/home/tasks_page.dart';
 import 'package:todo_app/service/local_notice_service.dart';
+import 'package:todo_app/widgets/custom_app_bar.dart';
 import 'package:todo_app/widgets/custom_bottom_nav_bar.dart';
 import 'package:todo_app/widgets/loading_circle.dart';
 
@@ -22,6 +23,7 @@ class _HomePageState extends State<HomePage> {
   var allTasks = <Task>[];
   var currentIndex = 0;
   late final LocalNotificationService service;
+  final screenTitles = ['Tasks', 'Notifications'];
 
   @override
   void initState() {
@@ -46,25 +48,28 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void onDoneTaskCallback(int id) async {
+  Future<void> onDoneTaskCallback(int id) async {
     await dataProvider.deleteTask(id);
-    int notificationId = await dataProvider.getNotifications(id);
-    await service.cancelNotification(id: notificationId);
+    int? notificationId = await dataProvider.getNotifications(id);
+    if (notificationId != null) {
+      await service.cancelNotification(id: notificationId);
+    }
     onUpdateTaskCallback();
   }
 
-  void onUpdateTaskCallback() async {
-    setState(() {
-      _dataFuture = getDatabase();
-    });
+  Future<void> onUpdateTaskCallback() async {
+    _dataFuture = getDatabase();
+    setState(() {});
   }
 
-  void onDeleteTaskCallback(int? taskId) async {
+  Future<void> onDeleteTaskCallback(int? taskId) async {
     if (taskId != null) {
       await dataProvider.deleteTask(taskId);
-      int notificationId = await dataProvider.getNotifications(taskId);
-      await service.cancelNotification(id: notificationId);
-      await dataProvider.deleteNotification(notificationId);
+      int? notificationId = await dataProvider.getNotifications(taskId);
+      if (notificationId != null) {
+        await service.cancelNotification(id: notificationId);
+        await dataProvider.deleteNotification(notificationId);
+      }
       onUpdateTaskCallback();
     }
   }
@@ -89,10 +94,11 @@ class _HomePageState extends State<HomePage> {
               onUpdateTaskCallback: onUpdateTaskCallback,
               onDeleteTaskCallback: onDeleteTaskCallback
             ),
-            NotificationsPage(allTasks: allTasks,)
+            const NotificationsPage(),
           ];
           return SafeArea(
             child: Scaffold(
+              appBar: CustomAppBar(title: screenTitles[currentIndex], allTasks: allTasks,),
               floatingActionButton: FloatingActionButton(
                 onPressed: () async {
                   await Navigator.pushNamed(context, RouteGenerator.addingTaskPage);

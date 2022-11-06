@@ -7,7 +7,6 @@ import 'package:todo_app/models/priority.dart';
 import 'package:todo_app/models/task.dart';
 import 'package:todo_app/service/local_notice_service.dart';
 import 'package:todo_app/utils/app_theme.dart';
-import 'package:todo_app/utils/extensions.dart';
 
 class AddingTaskPage extends StatefulWidget {
   const AddingTaskPage({Key? key}) : super(key: key);
@@ -171,16 +170,13 @@ class _TaskNameTextField extends StatelessWidget {
           child: TextFormField(
             controller: controller,
             validator: validateTaskName,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               hintText: 'Task name',
-              border: const OutlineInputBorder(
+              border: OutlineInputBorder(
                 borderSide: BorderSide.none,
               ),
-              hintStyle: context.bodyLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
             ),
-            style: context.bodyLarge?.copyWith(
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -211,7 +207,6 @@ class _DescriptionTextField extends StatelessWidget {
               ),
             ),
             maxLines: null,
-            style: context.bodyLarge,
           ),
         ),
       ],
@@ -238,7 +233,7 @@ class _ScheduleDate extends StatelessWidget {
                 borderSide: BorderSide.none,
               ),
               hintText: (DateFormat('d MMM yyyy').format(dateSelected)),
-              hintStyle: context.bodyLarge,
+              hintStyle: Theme.of(context).textTheme.bodyLarge,
             ),
             readOnly: true,
           ),
@@ -267,7 +262,7 @@ class _ScheduleTime extends StatelessWidget {
                 borderSide: BorderSide.none,
               ),
               hintText: '${timeSelected.hour}:${timeSelected.minute}',
-              hintStyle: context.bodyLarge,
+              hintStyle: Theme.of(context).textTheme.bodyLarge,
             ),
             readOnly: true,
           ),
@@ -297,7 +292,7 @@ class _SelectedPriority extends StatelessWidget {
         const SizedBox(width: 8,),
         Expanded(
           child: DropdownButton<String>(
-            style: context.bodyMedium,
+            style: Theme.of(context).textTheme.bodyLarge,
             isExpanded: true,
             value: priority,
             items: priorities.map<DropdownMenuItem<String>>((String value) {
@@ -328,7 +323,6 @@ class _CreateButton extends StatelessWidget {
           child: ElevatedButton(
             onPressed: onPressed,
             style: ButtonStyle(
-              textStyle: MaterialStateProperty.all(context.bodyMedium),
               backgroundColor: MaterialStateProperty.all(AppTheme.lightTheme(null).colorScheme.primary,),
               foregroundColor: MaterialStateProperty.all(AppTheme.lightTheme(null).colorScheme.onPrimary,),
             ),

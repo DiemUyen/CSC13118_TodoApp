@@ -3,8 +3,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_app/models/task.dart';
 import 'package:todo_app/utils/app_theme.dart';
-import 'package:todo_app/utils/extensions.dart';
-import 'package:todo_app/widgets/custom_app_bar.dart';
 import 'package:todo_app/widgets/to_do_card.dart';
 
 class TasksPage extends StatefulWidget {
@@ -40,7 +38,6 @@ class _TasksPageState extends State<TasksPage> with SingleTickerProviderStateMix
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'Tasks', allTasks: widget.allTasks,),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
@@ -52,7 +49,7 @@ class _TasksPageState extends State<TasksPage> with SingleTickerProviderStateMix
 
             Container(
               child: TabBar(
-                labelStyle: context.titleSmall,
+                labelStyle: Theme.of(context).textTheme.titleSmall,
                 indicatorSize: TabBarIndicatorSize.label,
                 indicator: CircleTabIndicator(color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant, radius: 4),
                 controller: _tabController,
@@ -129,7 +126,7 @@ class GreetingBar extends StatelessWidget {
       children: [
         RichText(
           text: TextSpan(
-            style: context.titleMedium?.copyWith(
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
               color: AppTheme.lightTheme(null).colorScheme.tertiary,
             ),
@@ -141,7 +138,6 @@ class GreetingBar extends StatelessWidget {
         ),
         Text(
           DateFormat('E, d MMM yyyy').format(DateTime.now()),
-          style: context.titleMedium,
         )
       ],
     );
@@ -208,7 +204,6 @@ class TodayTabView extends StatelessWidget {
                       TextButton(
                         onPressed: () {
                           Navigator.pop(context, false);
-                          onDeleteCallback(todayTasks[index].taskId);
                         },
                         child: const Text('Cancel'),
                       ),
@@ -217,7 +212,7 @@ class TodayTabView extends StatelessWidget {
                           Navigator.pop(context, true);
                         },
                         style: ButtonStyle(
-                          textStyle: MaterialStateProperty.all(context.bodyMedium),
+                          textStyle: MaterialStateProperty.all(Theme.of(context).textTheme.bodyMedium),
                           backgroundColor: MaterialStateProperty.all(AppTheme.lightTheme(null).colorScheme.primary,),
                           foregroundColor: MaterialStateProperty.all(AppTheme.lightTheme(null).colorScheme.onPrimary,),
                         ),
@@ -281,7 +276,7 @@ class UpcomingTabView extends StatelessWidget {
                             Navigator.pop(context, true);
                           },
                           style: ButtonStyle(
-                            textStyle: MaterialStateProperty.all(context.bodyMedium),
+                            textStyle: MaterialStateProperty.all(Theme.of(context).textTheme.bodyMedium),
                             backgroundColor: MaterialStateProperty.all(AppTheme.lightTheme(null).colorScheme.primary,),
                             foregroundColor: MaterialStateProperty.all(AppTheme.lightTheme(null).colorScheme.onPrimary,),
                           ),
@@ -343,10 +338,9 @@ class AllTabView extends StatelessWidget {
                         ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context, true);
-                            onDeleteCallback(allTasks[index].taskId);
                           },
                           style: ButtonStyle(
-                            textStyle: MaterialStateProperty.all(context.bodyMedium),
+                            textStyle: MaterialStateProperty.all(Theme.of(context).textTheme.bodyMedium),
                             backgroundColor: MaterialStateProperty.all(AppTheme.lightTheme(null).colorScheme.primary,),
                             foregroundColor: MaterialStateProperty.all(AppTheme.lightTheme(null).colorScheme.onPrimary,),
                           ),

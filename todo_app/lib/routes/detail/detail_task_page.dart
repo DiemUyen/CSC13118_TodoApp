@@ -3,9 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_app/data_access/data_provider.dart';
 import 'package:todo_app/models/task.dart';
-import 'package:todo_app/service/local_notice_service.dart';
 import 'package:todo_app/utils/app_theme.dart';
-import 'package:todo_app/utils/extensions.dart';
 import 'package:todo_app/widgets/loading_circle.dart';
 
 class DetailTaskPage extends StatefulWidget {
@@ -54,7 +52,7 @@ class _DetailTaskPageState extends State<DetailTaskPage> {
               child: Scaffold(
                 appBar: AppBar(),
                 body: Center(
-                  child: Text('You have done this task', style: context.bodyLarge,),
+                  child: Text('You have done this task', style: Theme.of(context).textTheme.bodyLarge,),
                 ),
               ),
             );
@@ -98,10 +96,10 @@ class DetailTask extends StatelessWidget {
                     FontAwesomeIcons.penFancy,
                     color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant,
                   ),
-                  const SizedBox(width: 8,),
+                  const SizedBox(width: 16,),
                   Text(
                     task.name,
-                    style: context.bodyLarge?.copyWith(
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -114,10 +112,10 @@ class DetailTask extends StatelessWidget {
                     FontAwesomeIcons.alignLeft,
                     color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant,
                   ),
-                  const SizedBox(width: 8,),
+                  const SizedBox(width: 16,),
                   Text(
                     task.description.isNotEmpty? task.description : 'No description',
-                    style: context.bodyLarge,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ],
               ),
@@ -128,10 +126,10 @@ class DetailTask extends StatelessWidget {
                     FontAwesomeIcons.calendar,
                     color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant,
                   ),
-                  const SizedBox(width: 8,),
+                  const SizedBox(width: 16,),
                   Text(
                     DateFormat('hh:mm, d MMM').format(task.toDoTime),
-                    style: context.bodyLarge,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ],
               ),
@@ -142,10 +140,10 @@ class DetailTask extends StatelessWidget {
                     FontAwesomeIcons.flag,
                     color: AppTheme.lightTheme(null).colorScheme.onSurfaceVariant,
                   ),
-                  const SizedBox(width: 8,),
+                  const SizedBox(width: 16,),
                   Text(
                     task.priority.name.toUpperCase(),
-                    style: context.bodyLarge,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ],
               ),

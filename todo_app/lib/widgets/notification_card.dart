@@ -3,7 +3,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:todo_app/models/notification.dart';
 import 'package:todo_app/routes.dart';
 import 'package:todo_app/utils/app_theme.dart';
-import 'package:todo_app/utils/extensions.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class NotificationCard extends StatelessWidget {
@@ -30,15 +29,16 @@ class NotificationCard extends StatelessWidget {
                 children: [
                   Text(
                     noti.description,
-                    style: context.bodyMedium?.copyWith(
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 8,),
                   Text(
                     timeago.format(noti.time),
-                    style: context.bodyMedium?.copyWith(
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: AppTheme.lightTheme(null).colorScheme.tertiary,
+                      fontWeight: FontWeight.w500,
                     ),
                   )
                 ],

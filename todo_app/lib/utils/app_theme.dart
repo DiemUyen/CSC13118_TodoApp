@@ -6,19 +6,12 @@ class AppTheme {
     return ThemeData(
       colorScheme: scheme,
       useMaterial3: true,
+      fontFamily: 'Montserrat',
 
       tabBarTheme: TabBarTheme(
         labelColor: scheme.primary,
         unselectedLabelColor: scheme.onSurfaceVariant,
       )
-    );
-  }
-
-  static ThemeData darkTheme(ColorScheme? darkColorScheme) {
-    ColorScheme scheme = darkColorScheme ?? ColorScheme.fromSeed(seedColor: const Color(0xFFFFB057), brightness: Brightness.dark);
-    return ThemeData(
-      colorScheme: scheme,
-      useMaterial3: true,
     );
   }
 }

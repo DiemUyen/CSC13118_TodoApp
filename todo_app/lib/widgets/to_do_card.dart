@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:todo_app/models/task.dart';
 import 'package:todo_app/routes.dart';
 import 'package:todo_app/utils/app_theme.dart';
-import 'package:todo_app/utils/extensions.dart';
 
 class ToDoCard extends StatefulWidget {
   const ToDoCard({Key? key, required this.todo, required this.onChangedCallback,}) : super(key: key);
@@ -35,8 +34,8 @@ class _ToDoCardState extends State<ToDoCard> {
                 activeColor: AppTheme.lightTheme(null).colorScheme.tertiary,
                 onChanged: (bool? value) {
                   if (value == true) {
+                    widget.onChangedCallback(widget.todo.taskId!);
                     setState(() {
-                      widget.onChangedCallback(widget.todo.taskId!);
                       isChecked = value!;
                     });
                   }
@@ -49,27 +48,29 @@ class _ToDoCardState extends State<ToDoCard> {
                   children: [
                     Text(
                       widget.todo.name,
-                      style: context.bodyLarge?.copyWith(
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     widget.todo.description.isEmpty? const SizedBox(height: 0,) : Text(
                       widget.todo.description,
-                      style: context.bodyLarge,
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     Text(
                       DateFormat('dd MM yyyy').format(DateTime.now()) == DateFormat('dd MM yyyy').format(widget.todo.toDoTime)
                           ? DateFormat('h:mm a').format(widget.todo.toDoTime)
                           : DateFormat('h:mm a, E d MMM yyyy').format(widget.todo.toDoTime),
-                      style: context.bodyLarge?.copyWith(
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.w500,
                           color: AppTheme.lightTheme(null).colorScheme.primary
                       ),
                     ),
                     Text(
                       widget.todo.priority.name.toUpperCase(),
-                      style: context.bodyLarge?.copyWith(
-                          color: AppTheme.lightTheme(null).colorScheme.tertiary
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: AppTheme.lightTheme(null).colorScheme.tertiary,
+                        fontWeight: FontWeight.w500,
                       ),
                     )
                   ],

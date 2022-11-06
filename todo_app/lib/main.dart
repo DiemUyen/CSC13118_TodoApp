@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Flutter Demo',
           theme: AppTheme.lightTheme(lightColorScheme),
-          darkTheme: AppTheme.darkTheme(darkColorScheme),
+
           onGenerateRoute: RouteGenerator.generateRoute,
           home: const HomePage(),
         );
